@@ -1,0 +1,14 @@
+{
+  "name": "El Arandas Dashboard",
+  "short_name": "Arandas",
+  "description": "Dashboard offline para control de inversión y ganancias - Birrieria y Taqueria El Arandas",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#C73A29",
+  "icons": [
+    { "src": "assets/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "assets/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "assets/icon-180.png", "sizes": "180x180", "type": "image/png" }
+  ]
+}

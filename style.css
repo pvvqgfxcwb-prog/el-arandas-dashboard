@@ -1,0 +1,114 @@
+:root{
+  --brand-black: #000000;
+  --brand-red: #C73A29;
+  --accent: #FFFFFF;
+}
+
+*{box-sizing:border-box;font-family: Inter, Arial, sans-serif;}
+
+body{
+  margin:0;
+  min-height:100vh;
+  background: linear-gradient(90deg, var(--brand-black) 50%, var(--brand-red) 50%);
+  color:var(--accent);
+  padding:18px;
+}
+
+/* Split background overlays to create subtle curve */
+.split{
+  position:fixed;
+  top:0;
+  bottom:0;
+  width:50%;
+  pointer-events:none;
+}
+.split.left{ left:0; background: rgba(0,0,0,0.0);}
+.split.right{ right:0; background: rgba(199,58,41,0.02);}
+
+.app{
+  max-width:900px;
+  margin: 18px auto;
+  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+  border-radius:18px;
+  padding:18px;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+}
+
+/* header */
+header{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding-bottom:8px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.logo{
+  width:68px;
+  height:68px;
+  object-fit:contain;
+  border-radius:50%;
+  background:#fff;
+  padding:6px;
+}
+header h1{
+  font-size:20px;
+  margin:0;
+  color: #fff;
+  letter-spacing:0.5px;
+}
+
+/* cards grid */
+.cards{
+  display:grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap:14px;
+  margin-top:16px;
+}
+.card{
+  background: #fff;
+  color:#111;
+  padding:14px;
+  border-radius:12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  text-align:center;
+}
+.card h3{ margin:0; font-size:14px; color:#666; }
+.card p{ margin:8px 0 0 0; font-size:20px; font-weight:700; color:#111; }
+
+/* charts */
+.charts{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:14px;
+  margin-top:18px;
+}
+.chart-card{
+  background:#fff;
+  padding:12px;
+  border-radius:12px;
+  color:#111;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+}
+.chart-card h3{ margin:0 0 8px 0; color:#222; font-size:14px; }
+
+/* controls */
+.controls{
+  display:flex;
+  gap:10px;
+  margin-top:14px;
+  align-items:center;
+}
+.controls input[type=file]{
+  padding:8px;
+  border-radius:8px;
+  background: rgba(255,255,255,0.06);
+  color:#fff;
+  border: none;
+}
+footer{ margin-top:16px; color: rgba(255,255,255,0.75); text-align:center; font-size:12px; }
+@media(max-width:700px){
+  .charts{ grid-template-columns:1fr; }
+  .cards{ grid-template-columns:1fr 1fr; }
+  .logo{ width:56px; height:56px; }
+}

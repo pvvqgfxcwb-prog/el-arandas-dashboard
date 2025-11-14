@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>El Arandas Dashboard</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="assets/icon-180.png">
+  <meta name="theme-color" content="#000000">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="split left"></div>
+  <div class="split right"></div>
+
+  <div class="app">
+    <header>
+      <img src="assets/logo_original.png" alt="El Arandas" class="logo">
+      <h1>El Arandas Dashboard</h1>
+    </header>
+
+    <section class="cards">
+      <div class="card">
+        <h3>Ventas</h3>
+        <p id="ventas">$0</p>
+      </div>
+      <div class="card">
+        <h3>Inversión</h3>
+        <p id="inversion">$0</p>
+      </div>
+      <div class="card">
+        <h3>Ganancia</h3>
+        <p id="ganancia">$0</p>
+      </div>
+      <div class="card">
+        <h3>% de ganancia</h3>
+        <p id="porcentaje">0%</p>
+      </div>
+    </section>
+
+    <section class="charts">
+      <div class="chart-card">
+        <h3>Ventas vs Inversión</h3>
+        <canvas id="chart1"></canvas>
+      </div>
+      <div class="chart-card">
+        <h3>Tendencia de Ganancia</h3>
+        <canvas id="chart2"></canvas>
+      </div>
+      <div class="chart-card">
+        <h3>Porcentaje de ganancia</h3>
+        <canvas id="chart3"></canvas>
+      </div>
+    </section>
+
+    <div class="controls">
+      <input type="file" id="fileInput" accept=".xlsx" />
+      <button id="installBtn" style="display:none">Instalar App</button>
+    </div>
+
+    <footer>
+      <small>Funciona offline después de la primera carga. Usa "Agregar a pantalla de inicio" en iPhone.</small>
+    </footer>
+  </div>
+
+  <!-- Libraries (these are loaded from CDN). For full offline use, serve local copies after first load. -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script src="app.js"></script>
+  <script>
+    // Register service worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js').catch(function(err){
+        console.warn('ServiceWorker registration failed: ', err);
+      });
+    }
+  </script>
+</body>
+</html>
