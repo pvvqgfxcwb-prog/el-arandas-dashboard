@@ -1,14 +1,9 @@
-// ================================
-//  EL ARANDAS DASHBOARD - APP.JS
-//  Versión: Lectura de data.xlsx
-// ================================
-
-// Formato de moneda
-function formatCurrency(value) {
-    return "$" + value.toLocaleString("en-US", { minimumFractionDigits: 2 });
+// FORMATO DE MONEDA
+function formatCurrency(num) {
+    return "$" + num.toLocaleString("en-US");
 }
 
-// Función principal al seleccionar archivo .xlsx
+// EVENTO PARA CARGAR ARCHIVO
 document.getElementById("fileInput").addEventListener("change", function (e) {
     const file = e.target.files[0];
     if (!file) return;
@@ -19,89 +14,78 @@ document.getElementById("fileInput").addEventListener("change", function (e) {
     reader.onload = function (ev) {
         const data = new Uint8Array(ev.target.result);
 
-        // === Leer Excel con SheetJS ===
+        // Leemos Excel con SheetJS
         const workbook = XLSX.read(data, { type: "array" });
-        const sheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[sheetName];
+        const sheet = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[sheet];
 
-        // Convertir hoja a JSON
-        const registros = XLSX.utils.sheet_to_json(worksheet, { defval: null });
+        // Convertimos a JSON
+        const rows = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
 
-        if (registros.length === 0) {
-            alert("El archivo Excel está vacío.");
-            return;
-        }
+        // Extraemos columnas
+        const semanas = rows.map(r => r.semana);
+        const ventas = rows.map(r => Number(r.ventas) || 0);
+        const inversion = rows.map(r => Number(r.inversion) || 0);
+        const comentarios = rows.map(r => r.comentario || "");
 
-        // Extraer columnas
-        const semanas = registros.map(r => r.semana);
-        const ventas = registros.map(r => Number(r.ventas) || 0);
-        const inversion = registros.map(r => Number(r.inversion) || 0);
-        const comentarios = registros.map(r => r.comentario || "");
-
-        // Calcular ganancia
+        // GANANCIA por semana
         const ganancia = ventas.map((v, i) => v - inversion[i]);
 
-        // Totales
+        // TOTALES
         const totalVentas = ventas.reduce((a, b) => a + b, 0);
         const totalInversion = inversion.reduce((a, b) => a + b, 0);
         const totalGanancia = ganancia.reduce((a, b) => a + b, 0);
-        const porcentaje = totalVentas > 0 ? ((totalGanancia / totalVentas) * 100).toFixed(2) : 0;
 
-        // Actualizar tarjetas
+        // Actualizamos la UI
         document.getElementById("ventas").innerText = formatCurrency(totalVentas);
         document.getElementById("inversion").innerText = formatCurrency(totalInversion);
         document.getElementById("ganancia").innerText = formatCurrency(totalGanancia);
-        document.getElementById("porcentaje").innerText = porcentaje + "%";
 
-        // Dibujar gráficas
-        drawCharts(semanas, ventas, inversion, ganancia);
+        const pct = totalVentas > 0 ? ((totalGanancia / totalVentas) * 100).toFixed(2) : "0.00";
+        document.getElementById("porcentaje").innerText = pct + "%";
+
+        // Dibujar gráfica
+        drawChart(semanas, ventas, inversion, ganancia);
     };
 });
 
-// ================================
-//        GRÁFICAS CHART.JS
-// ================================
+// GRAFICAR
+let chartInstance = null;
 
-let chart1, chart2;
+function drawChart(labels, ventas, inversion, ganancia) {
+    const ctx = document.getElementById("mainChart").getContext("2d");
 
-function drawCharts(semanas, ventas, inversion, ganancia) {
-    if (chart1) chart1.destroy();
-    if (chart2) chart2.destroy();
+    if (chartInstance) {
+        chartInstance.destroy();
+    }
 
-    // Comparación ventas vs inversión
-    chart1 = new Chart(document.getElementById("chart1"), {
+    chartInstance = new Chart(ctx, {
         type: "line",
         data: {
-            labels: semanas,
+            labels: labels,
             datasets: [
                 {
                     label: "Ventas",
                     data: ventas,
-                    borderWidth: 3,
-                    tension: 0.3
+                    borderWidth: 3
                 },
                 {
                     label: "Inversión",
                     data: inversion,
-                    borderWidth: 3,
-                    tension: 0.3
-                }
-            ]
-        }
-    });
-
-    // Ganancia por semana
-    chart2 = new Chart(document.getElementById("chart2"), {
-        type: "bar",
-        data: {
-            labels: semanas,
-            datasets: [
+                    borderWidth: 3
+                },
                 {
                     label: "Ganancia",
                     data: ganancia,
-                    borderWidth: 2
+                    borderWidth: 3
                 }
             ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: "top" }
+            }
         }
     });
 }
