@@ -1,31 +1,42 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>El Arandas Dashboard</title>
 
-    <!-- Librerías -->
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
-    <link rel="stylesheet" href="style.css">
-</head>
+    <!-- SheetJS XLSX (para leer archivos .xlsx) -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 
-<body>
-    <h1>📊 El Arandas Dashboard (Semanal)</h1>
+    <!-- Estilos básicos -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f3f3f3;
+            margin: 0;
+            padding: 20px;
+        }
 
-    <input type="file" id="fileInput" accept=".xlsx">
+        h1 {
+            text-align: center;
+            margin-bottom: 25px;
+        }
 
-    <div class="cards">
-        <div class="card">Ventas: <span id="ventas">$0</span></div>
-        <div class="card">Inversión: <span id="inversion">$0</span></div>
-        <div class="card">Ganancia: <span id="ganancia">$0</span></div>
-        <div class="card">Porcentaje: <span id="porcentaje">0%</span></div>
-    </div>
+        .cards {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+        }
 
-    <canvas id="mainChart"></canvas>
-
-    <script src="app.js"></script>
-</body>
-</html>
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 14px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+            width: 200px;
+            text-align: center;
