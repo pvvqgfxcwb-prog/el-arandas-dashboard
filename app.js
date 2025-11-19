@@ -4,6 +4,9 @@ function formatCurrency(num) {
 }
 
 function drawCharts(labels, ventas, inversion, ganancia) {
+  // Colores más visibles y contrastantes
+  const strongColors = ["#ffcc00", "#ff4444", "#00e5ff", "#66ff66", "#ff66ff", "#ff9933"];  
+
   // BARRAS
   const bar = document.getElementById("barChart").getContext("2d");
   new Chart(bar, {
@@ -14,21 +17,28 @@ function drawCharts(labels, ventas, inversion, ganancia) {
         {
           label: "Ventas",
           data: ventas,
+          backgroundColor: strongColors[0],
         },
         {
           label: "Inversión",
           data: inversion,
+          backgroundColor: strongColors[1],
         },
         {
           label: "Ganancia",
           data: ganancia,
-        },
-      ],
+          backgroundColor: strongColors[2],
+        }
+      ]
     },
     options: {
       responsive: true,
-      plugins: { legend: { position: "top" } },
-    },
+      plugins: { legend: { labels: { color: "#fff", font: { size: 14 } } } },
+      scales: {
+        x: { ticks: { color: "#fff" } },
+        y: { ticks: { color: "#fff" } }
+      }
+    }
   });
 
   // PASTEL
@@ -42,14 +52,23 @@ function drawCharts(labels, ventas, inversion, ganancia) {
           data: [
             ventas.reduce((a, b) => a + b, 0),
             inversion.reduce((a, b) => a + b, 0),
-            ganancia.reduce((a, b) => a + b, 0),
+            ganancia.reduce((a, b) => a + b, 0)
           ],
-        },
-      ],
+          backgroundColor: [strongColors[0], strongColors[1], strongColors[2]],
+        }
+      ]
     },
     options: {
       responsive: true,
-    },
+      plugins: {
+        legend: {
+          labels: {
+            color: "#fff",
+            font: { size: 14 }
+          }
+        }
+      }
+    }
   });
 }
 
@@ -77,12 +96,12 @@ document.getElementById("fileInput").addEventListener("change", function (e) {
     const totalInversion = inversion.reduce((a, b) => a + b, 0);
     const totalGanancia = ganancia.reduce((a, b) => a + b, 0);
 
-    document.getElementById("ventas").innerText = formatCurrency(totalVentas);
-    document.getElementById("inversion").innerText = formatCurrency(totalInversion);
-    document.getElementById("ganancia").innerText = formatCurrency(totalGanancia);
+    document.getElementById("ventasTotal").innerText = formatCurrency(totalVentas);
+    document.getElementById("inversionTotal").innerText = formatCurrency(totalInversion);
+    document.getElementById("gananciaTotal").innerText = formatCurrency(totalGanancia);
 
     const pct = totalVentas > 0 ? ((totalGanancia / totalVentas) * 100).toFixed(2) : "0.00";
-    document.getElementById("porcentaje").innerText = pct + "%";
+    document.getElementById("porcentajeTotal").innerText = pct + "%";
 
     drawCharts(labels, ventas, inversion, ganancia);
   };
