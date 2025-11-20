@@ -4,8 +4,7 @@ function formatCurrency(num) {
 }
 
 function drawCharts(labels, ventas, inversion, ganancia) {
-  // Colores más visibles y contrastantes
-  const strongColors = ["#ffcc00", "#ff4444", "#00e5ff", "#66ff66", "#ff66ff", "#ff9933"];  
+  const strongColors = ["#ffcc00", "#ff4444", "#00e5ff"];
 
   // BARRAS
   const bar = document.getElementById("barChart").getContext("2d");
@@ -14,26 +13,15 @@ function drawCharts(labels, ventas, inversion, ganancia) {
     data: {
       labels: labels,
       datasets: [
-        {
-          label: "Ventas",
-          data: ventas,
-          backgroundColor: strongColors[0],
-        },
-        {
-          label: "Inversión",
-          data: inversion,
-          backgroundColor: strongColors[1],
-        },
-        {
-          label: "Ganancia",
-          data: ganancia,
-          backgroundColor: strongColors[2],
-        }
+        { label: "Ventas", data: ventas, backgroundColor: strongColors[0] },
+        { label: "Inversión", data: inversion, backgroundColor: strongColors[1] },
+        { label: "Ganancia", data: ganancia, backgroundColor: strongColors[2] }
       ]
     },
     options: {
       responsive: true,
-      plugins: { legend: { labels: { color: "#fff", font: { size: 14 } } } },
+      animation: { duration: 1200 },
+      plugins: { legend: { labels: { color: "#fff" } } },
       scales: {
         x: { ticks: { color: "#fff" } },
         y: { ticks: { color: "#fff" } }
@@ -47,32 +35,26 @@ function drawCharts(labels, ventas, inversion, ganancia) {
     type: "pie",
     data: {
       labels: ["Ventas", "Inversión", "Ganancia"],
-      datasets: [
-        {
-          data: [
-            ventas.reduce((a, b) => a + b, 0),
-            inversion.reduce((a, b) => a + b, 0),
-            ganancia.reduce((a, b) => a + b, 0)
-          ],
-          backgroundColor: [strongColors[0], strongColors[1], strongColors[2]],
-        }
-      ]
+      datasets: [{
+        data: [
+          ventas.reduce((a,b)=>a+b,0),
+          inversion.reduce((a,b)=>a+b,0),
+          ganancia.reduce((a,b)=>a+b,0),
+        ],
+        backgroundColor: strongColors
+      }]
     },
     options: {
       responsive: true,
-      plugins: {
-        legend: {
-          labels: {
-            color: "#fff",
-            font: { size: 14 }
-          }
-        }
+      animation: { duration: 1500 },
+      plugins: { 
+        legend: { labels: { color: "#fff" } }
       }
     }
   });
 }
 
-// === PROCESAR ARCHIVO EXCEL ===
+// === PROCESAR EXCEL ===
 document.getElementById("fileInput").addEventListener("change", function (e) {
   const file = e.target.files[0];
   const reader = new FileReader();
@@ -80,21 +62,25 @@ document.getElementById("fileInput").addEventListener("change", function (e) {
   reader.readAsArrayBuffer(file);
 
   reader.onload = function (ev) {
-    const data = new Uint8Array(ev.target.result);
-    const workbook = XLSX.read(data, { type: "array" });
-    const sheetName = workbook.SheetNames[0];
-    const worksheet = workbook.Sheets[sheetName];
+    const workbook = XLSX.read(ev.target.result, { type: "array" });
+    const sheet = workbook.Sheets[workbook.SheetNames[0]];
 
-    const json = XLSX.utils.sheet_to_json(worksheet, { defval: null });
+    const json = XLSX.utils.sheet_to_json(sheet, { defval: 0 });
 
-    const labels = json.map((r) => r.semana);
-    const ventas = json.map((r) => Number(r.ventas) || 0);
-    const inversion = json.map((r) => Number(r.inversion) || 0);
+    // Detectar columnas reales
+    const first = json[0];
+    const colSemana = Object.keys(first).find(k => k.toLowerCase().includes("sem"));
+    const colVentas = Object.keys(first).find(k => k.toLowerCase().includes("vent"));
+    const colInv = Object.keys(first).find(k => k.toLowerCase().includes("inv"));
+
+    const labels = json.map(r => r[colSemana]);
+    const ventas = json.map(r => Number(r[colVentas]));
+    const inversion = json.map(r => Number(r[colInv]));
     const ganancia = ventas.map((v, i) => v - inversion[i]);
 
-    const totalVentas = ventas.reduce((a, b) => a + b, 0);
-    const totalInversion = inversion.reduce((a, b) => a + b, 0);
-    const totalGanancia = ganancia.reduce((a, b) => a + b, 0);
+    const totalVentas = ventas.reduce((a,b)=>a+b,0);
+    const totalInversion = inversion.reduce((a,b)=>a+b,0);
+    const totalGanancia = ganancia.reduce((a,b)=>a+b,0);
 
     document.getElementById("ventasTotal").innerText = formatCurrency(totalVentas);
     document.getElementById("inversionTotal").innerText = formatCurrency(totalInversion);
