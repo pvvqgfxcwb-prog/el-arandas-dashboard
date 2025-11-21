@@ -51,9 +51,6 @@ document.getElementById("fileInput").addEventListener("change", function (e) {
             // Dibuja gráficas
             drawCharts(labels, ventas, inversion, ganancia);
 
-        } catch (err) {
-            alert("Error leyendo el archivo. Asegúrate de que las columnas sean: semana, ventas, inversion.");
-            console.error(err);
-        }
+        
     };
 });
