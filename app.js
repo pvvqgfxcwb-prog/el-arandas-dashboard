@@ -1,44 +1,59 @@
 document.getElementById("fileInput").addEventListener("change", function (e) {
-  const file = e.target.files[0];
-  if (!file) return;
+    const file = e.target.files[0];
+    const reader = new FileReader();
 
-  const reader = new FileReader();
+    reader.readAsArrayBuffer(file);
 
-  reader.onload = function (evt) {
-    try {
-      const data = new Uint8Array(evt.target.result);
-      const workbook = XLSX.read(data, { type: "array" });
+    reader.onload = function (ev) {
+        try {
+            const data = new Uint8Array(ev.target.result);
+            const workbook = XLSX.read(data, { type: "array" });
+            const sheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[sheetName];
 
-      const sheetName = workbook.SheetNames[0];
-      const worksheet = workbook.Sheets[sheetName];
+            // Convierte Excel a JSON
+            let json = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
 
-      const json = XLSX.utils.sheet_to_json(worksheet, { defval: 0 });
+            // FILTRA filas vacías
+            json = json.filter(row =>
+                row.semana || row.Semana || row.SEMANA
+            );
 
-      console.log("JSON leído:", json);
+            if (json.length === 0) {
+                throw new Error("Archivo sin datos válidos");
+            }
 
-      const labels = json.map(r => r.semana);
-      const ventas = json.map(r => Number(r.ventas));
-      const inversion = json.map(r => Number(r.inversion));
-      const ganancia = ventas.map((v, i) => v - inversion[i]);
+            // Normaliza columnas (quita espacios y convierte minúsculas)
+            const normalize = (txt) =>
+                String(txt || "")
+                    .trim()
+                    .toLowerCase();
 
-      const totalVentas = ventas.reduce((a, b) => a + b, 0);
-      const totalInversion = inversion.reduce((a, b) => a + b, 0);
-      const totalGanancia = ganancia.reduce((a, b) => a + b, 0);
+            // Extrae columnas
+            const labels = json.map(r => normalize(r.semana || r.Semana || r.SEMANA));
+            const ventas = json.map(r => Number(r.ventas || r.Ventas || r.VENTAS) || 0);
+            const inversion = json.map(r => Number(r.inversion || r.Inversion || r.INVERSION) || 0);
 
-      document.getElementById("ventasTotal").innerText = formatCurrency(totalVentas);
-      document.getElementById("inversionTotal").innerText = formatCurrency(totalInversion);
-      document.getElementById("gananciaTotal").innerText = formatCurrency(totalGanancia);
+            const ganancia = ventas.map((v, i) => v - inversion[i]);
 
-      const pct = totalVentas > 0 ? ((totalGanancia / totalVentas) * 100).toFixed(2) : "0.00";
-      document.getElementById("porcentajeTotal").innerText = pct + "%";
+            // Totales
+            const totalVentas = ventas.reduce((a, b) => a + b, 0);
+            const totalInversion = inversion.reduce((a, b) => a + b, 0);
+            const totalGanancia = ganancia.reduce((a, b) => a + b, 0);
+            const pct = totalVentas > 0 ? ((totalGanancia / totalVentas) * 100).toFixed(2) : "0.00";
 
-      drawCharts(labels, ventas, inversion, ganancia);
+            // Imprime en pantalla
+            document.getElementById("ventasTotal").innerText = formatCurrency(totalVentas);
+            document.getElementById("inversionTotal").innerText = formatCurrency(totalInversion);
+            document.getElementById("gananciaTotal").innerText = formatCurrency(totalGanancia);
+            document.getElementById("porcentajeTotal").innerText = pct + "%";
 
-    } catch (error) {
-      console.error("Error procesando Excel:", error);
-      alert("Error leyendo el archivo. Asegúrate de que las columnas sean: semana, ventas, inversion.");
-    }
-  };
+            // Dibuja gráficas
+            drawCharts(labels, ventas, inversion, ganancia);
 
-  reader.readAsArrayBuffer(file);
+        } catch (err) {
+            alert("Error leyendo el archivo. Asegúrate de que las columnas sean: semana, ventas, inversion.");
+            console.error(err);
+        }
+    };
 });
