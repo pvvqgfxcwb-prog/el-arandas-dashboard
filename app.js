@@ -1,3 +1,59 @@
+// === VARIABLES GLOBALES ===
+let barChartInstance = null;
+let pieChartInstance = null;
+
+// === FUNCIONES ===
+function drawCharts(labels, ventas, inversion, ganancia) {
+
+    const strongColors = ["#ffcc00", "#ff4444", "#00e5ff", "#66ff66", "#ff66ff", "#ff9933"];
+
+    const bar = document.getElementById("barChart").getContext("2d");
+    const pie = document.getElementById("pieChart").getContext("2d");
+
+    // 🔥 Destruir gráficos anteriores
+    if (barChartInstance) barChartInstance.destroy();
+    if (pieChartInstance) pieChartInstance.destroy();
+
+    // === BARRAS ===
+    barChartInstance = new Chart(bar, {
+        type: "bar",
+        data: {
+            labels: labels,
+            datasets: [
+                { label: "Ventas", data: ventas, backgroundColor: strongColors[0] },
+                { label: "Inversión", data: inversion, backgroundColor: strongColors[1] },
+                { label: "Ganancia", data: ganancia, backgroundColor: strongColors[2] }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { labels: { color: "#fff", font: { size: 14 } } } },
+            scales: { x: { ticks: { color: "#fff" } }, y: { ticks: { color: "#fff" } } }
+        }
+    });
+
+    // === PASTEL ===
+    pieChartInstance = new Chart(pie, {
+        type: "pie",
+        data: {
+            labels: ["Ventas", "Inversión", "Ganancia"],
+            datasets: [
+                {
+                    data: [
+                        ventas.reduce((a, b) => a + b, 0),
+                        inversion.reduce((a, b) => a + b, 0),
+                        ganancia.reduce((a, b) => a + b, 0)
+                    ],
+                    backgroundColor: [strongColors[0], strongColors[1], strongColors[2]]
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { labels: { color: "#fff", font: { size: 14 } } } }
+        }
+    });
+}
 // === FUNCIONES ===
 function drawCharts(labels, ventas, inversion, ganancia) {
 const strongColors = ["#ffcc00", "#ff4444", "#00e5ff", "#66ff66", "#ff66ff", "#ff9933"];
