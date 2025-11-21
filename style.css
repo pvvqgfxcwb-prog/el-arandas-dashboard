@@ -104,3 +104,6 @@ canvas {
   width: 100% !important;
   height: 400px !important;
 }
+#fileInput {
+  margin-bottom: 40px;
+}
