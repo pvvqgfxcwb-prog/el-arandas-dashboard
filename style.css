@@ -78,21 +78,28 @@ canvas {
   box-shadow: 0 0 18px rgba(255,0,0,0.4);
 }
 
-/* === LOGO CON EFECTO 3D + GLASSMORPHISM === */
+/* === LOGO CENTRADO DE FONDO DETRÁS DEL TÍTULO === */
 .logo-container {
   position: absolute;
-  top: 10px;
+  top: 40px;
   left: 50%;
-  transform: translateX(-50%) perspective(500px) rotateX(6deg) rotateY(-6deg);
-  background: rgba(255,255,255,0.08);
-  border-radius: 20px;
-  padding: 12px;
-  border: 1px solid rgba(255,255,255,0.25);
-  backdrop-filter: blur(12px);
-  box-shadow: 0 10px 25px rgba(255,0,0,0.4), inset 0 0 20px rgba(255,255,255,0.05);
+  transform: translateX(-50%) scale(1.2);
+  background: rgba(255,255,255,0.05);
+  border-radius: 25px;
+  padding: 18px;
+  border: 1px solid rgba(255,255,255,0.18);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 15px 35px rgba(255,0,0,0.45), inset 0 0 25px rgba(255,255,255,0.07);
   transition: 0.35s;
-  z-index: 0;
+  z-index: 1;
 }
+
+.logo-container img {
+  width: 150px;
+  opacity: 0.85;
+  filter: drop-shadow(0 0 12px rgba(255,0,0,0.8));
+}
+
 
 .logo-container:hover {
   transform: perspective(600px) rotateX(0deg) rotateY(0deg) scale(1.05);
