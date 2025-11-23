@@ -10,12 +10,15 @@ body {
 
 h1, h2 {
   color: #ffffff;
-  text-shadow: 0 0 10px rgba(255,0,0,0.6);
+  text-shadow: 0 0 12px rgba(0,0,0,0.85), 0 0 18px rgba(255,0,0,0.5);
+  position: relative;
+  z-index: 2;
+  margin-top: 120px;
 }
 
 /* === INPUT DE ARCHIVO === */
 #fileInput {
-  margin-top: 20px;
+  margin-top: 80px;
   padding: 12px 18px;
   background: rgba(255,255,255,0.15);
   border: 1px solid rgba(255,255,255,0.3);
@@ -78,16 +81,17 @@ canvas {
 /* === LOGO CON EFECTO 3D + GLASSMORPHISM === */
 .logo-container {
   position: absolute;
-  top: 20px;
-  left: 20px;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%) perspective(500px) rotateX(6deg) rotateY(-6deg);
   background: rgba(255,255,255,0.08);
   border-radius: 20px;
   padding: 12px;
   border: 1px solid rgba(255,255,255,0.25);
   backdrop-filter: blur(12px);
   box-shadow: 0 10px 25px rgba(255,0,0,0.4), inset 0 0 20px rgba(255,255,255,0.05);
-  transform: perspective(500px) rotateX(6deg) rotateY(-6deg);
   transition: 0.35s;
+  z-index: 0;
 }
 
 .logo-container:hover {
