@@ -25,7 +25,6 @@ h1, h2 {
   backdrop-filter: blur(6px);
   transition: 0.3s;
 }
-margin-bottom: 40px;
 
 #fileInput:hover {
   background: rgba(255,255,255,0.25);
@@ -100,10 +99,11 @@ canvas {
   width: 115px;
   filter: drop-shadow(0 0 9px #ff1a1a);
 }
-canvas {
-  width: 100% !important;
-  height: 400px !important;
+/* EXTRA SPACE FOR BOTTOM AREA */
+body {
+  padding-bottom: 140px;
 }
+
 #fileInput {
   margin-bottom: 40px;
 }
